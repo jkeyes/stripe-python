@@ -4,7 +4,7 @@ import stripe
 from tests.helper import StripeMockTestCase
 
 
-TEST_DISPUTE_ID = 'dp_test'
+TEST_DISPUTE_ID = 'dp_123'
 
 
 class DisputeTest(StripeMockTestCase):
