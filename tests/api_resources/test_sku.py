@@ -51,7 +51,10 @@ class SKUTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.SKU.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
+        resource = stripe.SKU.modify(
+            TEST_RESOURCE_ID,
+            metadata={'key': 'value'}
+        )
         self.assert_requested(
             'post',
             '/v1/skus/%s' % TEST_RESOURCE_ID

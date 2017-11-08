@@ -45,7 +45,10 @@ class ProductTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Product.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
+        resource = stripe.Product.modify(
+            TEST_RESOURCE_ID,
+            metadata={'key': 'value'}
+        )
         self.assert_requested(
             'post',
             '/v1/products/%s' % TEST_RESOURCE_ID
@@ -60,4 +63,3 @@ class ProductTest(StripeMockTestCase):
             '/v1/products/%s' % resource.id
         )
         self.assertIsInstance(resource, stripe.Product)
-

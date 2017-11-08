@@ -35,7 +35,10 @@ class DisputeTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Dispute.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
+        resource = stripe.Dispute.modify(
+            TEST_RESOURCE_ID,
+            metadata={'key': 'value'}
+        )
         self.assert_requested(
             'post',
             '/v1/disputes/%s' % TEST_RESOURCE_ID

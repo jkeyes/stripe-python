@@ -45,7 +45,10 @@ class OrderTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Order.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
+        resource = stripe.Order.modify(
+            TEST_RESOURCE_ID,
+            metadata={'key': 'value'}
+        )
         self.assert_requested(
             'post',
             '/v1/orders/%s' % TEST_RESOURCE_ID

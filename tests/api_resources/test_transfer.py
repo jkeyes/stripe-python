@@ -21,8 +21,9 @@ class TransferTest(StripeResourceTest):
         })
 
         transfer = stripe.Transfer(id='tr_cancel')
+        transfer_canceled = transfer.cancel(idempotency_key='idem-foo')
 
-        self.assertTrue(transfer is transfer.cancel(idempotency_key='idem-foo'))
+        self.assertTrue(transfer is transfer_canceled)
         self.assertEquals('canceled', transfer.status)
         self.assertEquals('tr_cancel', transfer.id)
 

@@ -48,7 +48,10 @@ class CouponTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Coupon.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
+        resource = stripe.Coupon.modify(
+            TEST_RESOURCE_ID,
+            metadata={'key': 'value'}
+        )
         self.assert_requested(
             'post',
             '/v1/coupons/%s' % TEST_RESOURCE_ID
