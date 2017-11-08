@@ -4,6 +4,9 @@ import stripe
 from tests.helper import StripeMockTestCase
 
 
+TEST_RESOURCE_ID = '250FF'
+
+
 class CouponTest(StripeMockTestCase):
     def test_is_listable(self):
         resources = stripe.Coupon.list()
@@ -15,10 +18,10 @@ class CouponTest(StripeMockTestCase):
         self.assertIsInstance(resources.data[0], stripe.Coupon)
 
     def test_is_retrievable(self):
-        resource = stripe.Coupon.retrieve('25OFF')
+        resource = stripe.Coupon.retrieve(TEST_RESOURCE_ID)
         self.assert_requested(
             'get',
-            '/v1/coupons/25OFF'
+            '/v1/coupons/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.Coupon)
 
@@ -36,7 +39,7 @@ class CouponTest(StripeMockTestCase):
         self.assertIsInstance(resource, stripe.Coupon)
 
     def test_is_saveable(self):
-        resource = stripe.Coupon.retrieve('25OFF')
+        resource = stripe.Coupon.retrieve(TEST_RESOURCE_ID)
         resource.metadata['key'] = 'value'
         resource.save()
         self.assert_requested(
@@ -45,15 +48,15 @@ class CouponTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Coupon.modify('25OFF', metadata={'key': 'value'})
+        resource = stripe.Coupon.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
         self.assert_requested(
             'post',
-            '/v1/coupons/25OFF'
+            '/v1/coupons/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.Coupon)
 
     def test_is_deletable(self):
-        resource = stripe.Coupon.retrieve('25OFF')
+        resource = stripe.Coupon.retrieve(TEST_RESOURCE_ID)
         resource.delete()
         self.assert_requested(
             'delete',

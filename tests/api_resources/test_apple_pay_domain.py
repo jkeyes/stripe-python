@@ -4,6 +4,9 @@ import stripe
 from tests.helper import StripeMockTestCase
 
 
+TEST_RESOURCE_ID = 'apwc_123'
+
+
 class ApplePayDomainTest(StripeMockTestCase):
     def test_is_listable(self):
         resources = stripe.ApplePayDomain.list()
@@ -15,10 +18,10 @@ class ApplePayDomainTest(StripeMockTestCase):
         self.assertIsInstance(resources.data[0], stripe.ApplePayDomain)
 
     def test_is_retrievable(self):
-        resource = stripe.ApplePayDomain.retrieve('apwc_123')
+        resource = stripe.ApplePayDomain.retrieve(TEST_RESOURCE_ID)
         self.assert_requested(
             'get',
-            '/v1/apple_pay/domains/apwc_123'
+            '/v1/apple_pay/domains/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.ApplePayDomain)
 
@@ -33,7 +36,7 @@ class ApplePayDomainTest(StripeMockTestCase):
         self.assertIsInstance(resource, stripe.ApplePayDomain)
 
     def test_is_deletable(self):
-        resource = stripe.ApplePayDomain.retrieve('apwc_123')
+        resource = stripe.ApplePayDomain.retrieve(TEST_RESOURCE_ID)
         resource.delete()
         self.assert_requested(
             'delete',

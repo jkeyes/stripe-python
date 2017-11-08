@@ -4,6 +4,9 @@ import stripe
 from tests.helper import StripeMockTestCase
 
 
+TEST_RESOURCE_ID = 'US'
+
+
 class CountrySpecTest(StripeMockTestCase):
     def test_is_listable(self):
         resources = stripe.CountrySpec.list()
@@ -15,9 +18,9 @@ class CountrySpecTest(StripeMockTestCase):
         self.assertIsInstance(resources.data[0], stripe.CountrySpec)
 
     def test_is_retrievable(self):
-        resource = stripe.CountrySpec.retrieve('US')
+        resource = stripe.CountrySpec.retrieve(TEST_RESOURCE_ID)
         self.assert_requested(
             'get',
-            '/v1/country_specs/US'
+            '/v1/country_specs/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.CountrySpec)

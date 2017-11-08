@@ -4,7 +4,7 @@ import stripe
 from tests.helper import StripeMockTestCase
 
 
-TEST_DISPUTE_ID = 'dp_123'
+TEST_RESOURCE_ID = 'dp_123'
 
 
 class DisputeTest(StripeMockTestCase):
@@ -18,15 +18,15 @@ class DisputeTest(StripeMockTestCase):
         self.assertIsInstance(resources.data[0], stripe.Dispute)
 
     def test_is_retrievable(self):
-        resource = stripe.Dispute.retrieve(TEST_DISPUTE_ID)
+        resource = stripe.Dispute.retrieve(TEST_RESOURCE_ID)
         self.assert_requested(
             'get',
-            '/v1/disputes/%s' % TEST_DISPUTE_ID
+            '/v1/disputes/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.Dispute)
 
     def test_is_saveable(self):
-        resource = stripe.Dispute.retrieve(TEST_DISPUTE_ID)
+        resource = stripe.Dispute.retrieve(TEST_RESOURCE_ID)
         resource.metadata['key'] = 'value'
         resource.save()
         self.assert_requested(
@@ -35,15 +35,15 @@ class DisputeTest(StripeMockTestCase):
         )
 
     def test_is_modifiable(self):
-        resource = stripe.Dispute.modify(TEST_DISPUTE_ID, metadata={'key': 'value'})
+        resource = stripe.Dispute.modify(TEST_RESOURCE_ID, metadata={'key': 'value'})
         self.assert_requested(
             'post',
-            '/v1/disputes/%s' % TEST_DISPUTE_ID
+            '/v1/disputes/%s' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.Dispute)
 
     def test_is_closeable(self):
-        resource = stripe.Dispute.retrieve(TEST_DISPUTE_ID)
+        resource = stripe.Dispute.retrieve(TEST_RESOURCE_ID)
         resource.close()
         self.assert_requested(
             'post',
