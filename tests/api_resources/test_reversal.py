@@ -26,14 +26,14 @@ class ReversalTest(StripeMockTestCase):
 
     def test_is_not_modifiable(self):
         with self.assertRaises(NotImplementedError):
-            resource = stripe.Reversal.modify(
+            stripe.Reversal.modify(
                 TEST_RESOURCE_ID,
                 metadata={'key': 'value'}
             )
 
     def test_is_not_retrievable(self):
         with self.assertRaises(NotImplementedError):
-            resource = stripe.Reversal.retrieve(TEST_RESOURCE_ID)
+            stripe.Reversal.retrieve(TEST_RESOURCE_ID)
 
     # We don't use stripe-mock as the reversal returned has a transfer id that
     # is different from the transfer used to access the reversal
@@ -45,4 +45,3 @@ class ReversalTest(StripeMockTestCase):
             'post',
             '/v1/transfers/tr_123/reversals/%s' % TEST_RESOURCE_ID
         )
-

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import stripe
-from tests.helper import (StripeMockTestCase, StripeResourceTest)
+from tests.helper import (StripeMockTestCase)
 
 
 TEST_RESOURCE_ID = 'rp_123'
