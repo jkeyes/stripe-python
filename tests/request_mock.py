@@ -22,7 +22,7 @@ class RequestMock(object):
 
     def _patched_request(self, requestor, method, url, *args, **kwargs):
         response_body = self._stub_request_handler.get_response(method, url)
-        if response_body:
+        if response_body is not None:
             return response_body, stripe.api_key
 
         return self._real_request(requestor, method, url, *args, **kwargs)
