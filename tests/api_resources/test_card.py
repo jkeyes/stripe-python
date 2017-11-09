@@ -8,7 +8,7 @@ TEST_RESOURCE_ID = 'card_123'
 
 
 class CardTest(StripeMockTestCase):
-    def create_card(self, **params):
+    def construct_resource(self, **params):
         card_dict = {
             'id': TEST_RESOURCE_ID,
             'object': 'card',
@@ -18,21 +18,21 @@ class CardTest(StripeMockTestCase):
         return stripe.Card.construct_from(card_dict, stripe.api_key)
 
     def test_has_account_instance_url(self):
-        resource = self.create_card(account='acct_123')
+        resource = self.construct_resource(account='acct_123')
         self.assertEquals(
             '/v1/accounts/acct_123/external_accounts/%s' % TEST_RESOURCE_ID,
             resource.instance_url()
         )
 
     def test_has_customer_instance_url(self):
-        resource = self.create_card(customer='cus_123')
+        resource = self.construct_resource(customer='cus_123')
         self.assertEquals(
             '/v1/customers/cus_123/sources/%s' % TEST_RESOURCE_ID,
             resource.instance_url()
         )
 
     def test_has_recipient_instance_url(self):
-        resource = self.create_card(recipient='rp_123')
+        resource = self.construct_resource(recipient='rp_123')
         self.assertEquals(
             '/v1/recipients/rp_123/cards/%s' % TEST_RESOURCE_ID,
             resource.instance_url()
@@ -46,7 +46,7 @@ class CardTest(StripeMockTestCase):
             stripe.Card.retrieve(TEST_RESOURCE_ID)
 
     def test_is_saveable(self):
-        resource = self.create_card(customer='cus_123')
+        resource = self.construct_resource(customer='cus_123')
         resource.metadata['key'] = 'value'
         resource.save()
         self.assert_requested(
@@ -62,7 +62,7 @@ class CardTest(StripeMockTestCase):
             )
 
     def test_is_deletable(self):
-        resource = self.create_card(customer='cus_123')
+        resource = self.construct_resource(customer='cus_123')
         resource.delete()
         self.assert_requested(
             'delete',

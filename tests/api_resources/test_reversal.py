@@ -8,7 +8,7 @@ TEST_RESOURCE_ID = 'trr_123'
 
 
 class ReversalTest(StripeMockTestCase):
-    def create_reversal(self):
+    def construct_resource(self):
         reversal_dict = {
             'id': TEST_RESOURCE_ID,
             'object': 'reversal',
@@ -18,7 +18,7 @@ class ReversalTest(StripeMockTestCase):
         return stripe.Reversal.construct_from(reversal_dict, stripe.api_key)
 
     def test_has_instance_url(self):
-        resource = self.create_reversal()
+        resource = self.construct_resource()
         self.assertEquals(
             '/v1/transfers/tr_123/reversals/%s' % TEST_RESOURCE_ID,
             resource.instance_url()
@@ -38,7 +38,7 @@ class ReversalTest(StripeMockTestCase):
     # We don't use stripe-mock as the reversal returned has a transfer id that
     # is different from the transfer used to access the reversal
     def test_is_saveable(self):
-        resource = self.create_reversal()
+        resource = self.construct_resource()
         resource.metadata['key'] = 'value'
         resource.save()
         self.assert_requested(
