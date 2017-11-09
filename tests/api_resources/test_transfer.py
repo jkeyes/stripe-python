@@ -84,10 +84,10 @@ class TransferTest(StripeMockTestCase):
 
 class TransferReversalTest(StripeMockTestCase):
     def test_is_listable(self):
-        resources = stripe.Transfer.list_reversals('tr_123')
+        resources = stripe.Transfer.list_reversals(TEST_RESOURCE_ID)
         self.assert_requested(
             'get',
-            '/v1/transfers/tr_123/reversals'
+            '/v1/transfers/%s/reversals' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resources.data, list)
         self.assertIsInstance(resources.data[0], stripe.Reversal)
@@ -106,19 +106,24 @@ class TransferReversalTest(StripeMockTestCase):
 
     def test_is_creatable(self):
         resource = stripe.Transfer.create_reversal(
-            'tr_123',
+            TEST_RESOURCE_ID,
             amount=100
         )
         self.assert_requested(
             'post',
-            '/v1/transfers/tr_123/reversals'
+            '/v1/transfers/%s/reversals' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resource, stripe.Reversal)
 
     def test_is_modifiable(self):
         resource = stripe.Transfer.modify_reversal(
-            'tr_123',
-            'trr_123',
+            TEST_RESOURCE_ID,
+            TEST_REVERSAL_ID,
             metadata={'foo': 'bar'}
+        )
+        self.assert_requested(
+            'post',
+            '/v1/transfers/%s/reversals/%s' % (TEST_RESOURCE_ID,
+                                               TEST_REVERSAL_ID)
         )
         self.assertIsInstance(resource, stripe.Reversal)
