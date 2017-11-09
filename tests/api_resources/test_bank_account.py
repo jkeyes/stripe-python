@@ -61,3 +61,11 @@ class BankAccountTest(StripeMockTestCase):
             'delete',
             '/v1/customers/cus_123/sources/%s' % TEST_RESOURCE_ID
         )
+
+    def test_is_verifiable(self):
+        resource = self.construct_resource(customer='cus_123')
+        resource.verify()
+        self.assert_requested(
+            'post',
+            '/v1/customers/cus_123/sources/%s/verify' % TEST_RESOURCE_ID
+        )
