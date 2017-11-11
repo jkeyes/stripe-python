@@ -9,7 +9,7 @@ from mock import patch
 
 from stripe import six
 
-from tests.helper import (StripeTestCase)
+from tests.helper import (StripeMockTestCase, StripeTestCase)
 
 
 DUMMY_CHARGE = {
@@ -19,7 +19,7 @@ DUMMY_CHARGE = {
 }
 
 
-class FunctionalTests(StripeTestCase):
+class FunctionalTests(StripeMockTestCase):
     request_client = stripe.http_client.Urllib2Client
 
     def setUp(self):
@@ -38,59 +38,6 @@ class FunctionalTests(StripeTestCase):
         super(FunctionalTests, self).tearDown()
 
         self.client_patcher.stop()
-
-    def test_dns_failure(self):
-        api_base = stripe.api_base
-        try:
-            stripe.api_base = 'https://my-invalid-domain.ireallywontresolve/v1'
-            self.assertRaises(stripe.error.APIConnectionError,
-                              stripe.Customer.create)
-        finally:
-            stripe.api_base = api_base
-
-    def test_run(self):
-        charge = stripe.Charge.create(**DUMMY_CHARGE)
-        self.assertFalse(charge.refunded)
-        charge.refund()
-        self.assertTrue(charge.refunded)
-
-    def test_refresh(self):
-        charge = stripe.Charge.create(**DUMMY_CHARGE)
-        charge2 = stripe.Charge.retrieve(charge.id)
-        self.assertEqual(charge2.created, charge.created)
-
-        charge2.junk = 'junk'
-        charge2.refresh()
-        self.assertRaises(AttributeError, lambda: charge2.junk)
-
-    def test_list_accessors(self):
-        customer = stripe.Customer.create(source='tok_visa')
-        self.assertEqual(customer['created'], customer.created)
-        customer['foo'] = 'bar'
-        self.assertEqual(customer.foo, 'bar')
-
-    def test_raise(self):
-        self.assertRaises(stripe.error.CardError, stripe.Charge.create,
-                          amount=100, currency='usd',
-                          source='tok_chargeDeclinedExpiredCard')
-
-    def test_response_headers(self):
-        try:
-            stripe.Charge.create(amount=100, currency='usd',
-                                 source='tok_chargeDeclinedExpiredCard')
-            self.fail('charge creation with expired card did not fail')
-        except stripe.error.CardError as e:
-            self.assertTrue(e.request_id.startswith('req_'))
-
-    def test_unicode(self):
-        # Make sure unicode requests can be sent
-        self.assertRaises(stripe.error.InvalidRequestError,
-                          stripe.Charge.retrieve,
-                          id=u'☃')
-
-    def test_none_values(self):
-        customer = stripe.Customer.create(plan=None)
-        self.assertTrue(customer.id)
 
     def test_missing_id(self):
         customer = stripe.Customer()
@@ -143,7 +90,7 @@ class AuthenticationErrorTest(StripeTestCase):
             stripe.api_key = key
 
 
-class CardErrorTest(StripeTestCase):
+class CardErrorTest(StripeMockTestCase):
 
     def test_declined_card_props(self):
         try:
@@ -156,8 +103,67 @@ class CardErrorTest(StripeTestCase):
             self.assertTrue(e.request_id.startswith('req_'))
 
 
-class InvalidRequestErrorTest(StripeTestCase):
+# TODO: find a way to move all the ones below those to stripe-mock or to stub
+# them instead of hitting the API.
 
+
+class FunctionalOldTests(StripeTestCase):
+    # stripe-mock does not handle unicode properly and returns a 404
+    # tried to stub but same issue in that case, encoding problem?
+    def test_unicode(self):
+        # Make sure unicode requests can be sent
+        self.assertRaises(stripe.error.InvalidRequestError,
+                          stripe.Charge.retrieve,
+                          id=u'☃')
+
+    # Those tests fail in StripeMockTestCase with STRIPE_TEST_PYCURL set.
+
+    def test_dns_failure(self):
+        api_base = stripe.api_base
+        try:
+            stripe.api_base = 'https://my-invalid-domain.ireallywontresolve/v1'
+            self.assertRaises(stripe.error.APIConnectionError,
+                              stripe.Customer.create)
+        finally:
+            stripe.api_base = api_base
+
+    def test_refresh(self):
+        charge = stripe.Charge.create(**DUMMY_CHARGE)
+        charge2 = stripe.Charge.retrieve(charge.id)
+        self.assertEqual(charge2.created, charge.created)
+
+        charge2.junk = 'junk'
+        charge2.refresh()
+        self.assertRaises(AttributeError, lambda: charge2.junk)
+
+    def test_list_accessors(self):
+        customer = stripe.Customer.create(source='tok_visa')
+        self.assertEqual(customer['created'], customer.created)
+        customer['foo'] = 'bar'
+        self.assertEqual(customer.foo, 'bar')
+
+    def test_none_values(self):
+        customer = stripe.Customer.create(plan=None)
+        self.assertTrue(customer.id)
+
+    # For the ones below, stripe-mock does not return a valid JSON payload.
+
+    def test_raise(self):
+        self.assertRaises(stripe.error.CardError, stripe.Charge.create,
+                          amount=100, currency='usd',
+                          source='tok_chargeDeclinedExpiredCard')
+
+    def test_response_headers(self):
+        try:
+            stripe.Charge.create(amount=100, currency='usd',
+                                 source='tok_chargeDeclinedExpiredCard')
+            self.fail('charge creation with expired card did not fail')
+        except stripe.error.CardError as e:
+            self.assertTrue(e.request_id.startswith('req_'))
+
+
+# stripe-mock does not return a JSON payload for errors causing tests to fail
+class InvalidRequestErrorTest(StripeTestCase):
     def test_nonexistent_object(self):
         try:
             stripe.Charge.retrieve('invalid')
