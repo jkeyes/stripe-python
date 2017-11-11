@@ -133,5 +133,4 @@ class SubscriptionTest(StripeMockTestCase):
     #    )
     #    self.assertIsInstance(resource, stripe.Subscription)
 
-
     # TODO: Test serialize
