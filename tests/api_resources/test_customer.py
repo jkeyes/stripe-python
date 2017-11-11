@@ -152,3 +152,62 @@ class CustomerSourcesTests(StripeMockTestCase):
             '/v1/customers/%s/sources' % TEST_RESOURCE_ID
         )
         self.assertIsInstance(resources.data, list)
+
+
+class CustomerMethodsTests(StripeMockTestCase):
+    def test_can_add_invoice_item(self):
+        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource.add_invoice_item(
+            amount=100,
+            currency='usd'
+        )
+        self.assert_requested(
+            'post',
+            '/v1/invoiceitems',
+            {
+                'amount': 100,
+                'currency': 'usd',
+                'customer': '%s' % resource.id
+            }
+        )
+
+    def test_can_invoices(self):
+        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource.invoices()
+        self.assert_requested(
+            'get',
+            '/v1/invoices',
+            {
+                'customer': '%s' % resource.id
+            }
+        )
+
+    def test_can_invoice_items(self):
+        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource.invoice_items()
+        self.assert_requested(
+            'get',
+            '/v1/invoiceitems',
+            {
+                'customer': '%s' % resource.id
+            }
+        )
+
+    def test_can_charges(self):
+        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource.charges()
+        self.assert_requested(
+            'get',
+            '/v1/charges',
+            {
+                'customer': '%s' % resource.id
+            }
+        )
+
+    def test_can_delete_discount(self):
+        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource.delete_discount()
+        self.assert_requested(
+            'delete',
+            '/v1/customers/%s/discount' % resource.id
+        )
