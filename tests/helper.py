@@ -100,15 +100,6 @@ DUMMY_CHARGE = {
     'source': 'tok_visa'
 }
 
-DUMMY_PLAN = {
-    'amount': 2000,
-    'interval': 'month',
-    'name': 'Amazing Gold Plan',
-    'currency': 'usd',
-    'id': ('stripe-test-gold-' +
-           ''.join(random.choice(string.ascii_lowercase) for x in range(10)))
-}
-
 
 @with_stripe_attributes(
     api_base=os.environ.get('STRIPE_API_BASE', stripe.api_base),
