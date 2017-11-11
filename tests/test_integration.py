@@ -9,7 +9,14 @@ from mock import patch
 
 from stripe import six
 
-from tests.helper import (StripeTestCase, DUMMY_CHARGE)
+from tests.helper import (StripeTestCase)
+
+
+DUMMY_CHARGE = {
+    'amount': 100,
+    'currency': 'usd',
+    'source': 'tok_visa'
+}
 
 
 class FunctionalTests(StripeTestCase):

@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import datetime
 import os
 import sys
 import unittest2
@@ -88,15 +87,6 @@ class StripeMockTestCase(unittest2.TestCase):
 
     def assert_requested(self, *args, **kwargs):
         return self.request_mock.assert_requested(*args, **kwargs)
-
-
-NOW = datetime.datetime.now()
-
-DUMMY_CHARGE = {
-    'amount': 100,
-    'currency': 'usd',
-    'source': 'tok_visa'
-}
 
 
 @with_stripe_attributes(
