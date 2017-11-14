@@ -114,7 +114,24 @@ class AccountTest(StripeMockTestCase):
         self.assertIsInstance(resource, stripe.Account)
         self.assertTrue(resource is account)
 
-    # TODO: Test deauthorize
+    def test_is_deauthorizable(self):
+        account = stripe.Account.retrieve(TEST_RESOURCE_ID)
+        self.stub_request(
+            'post',
+            '/oauth/deauthorize',
+            {
+                'stripe_user_id': account.id,
+            }
+        )
+        account.deauthorize()
+        self.assert_requested(
+           'post',
+           '/oauth/deauthorize',
+           {
+               'client_id': stripe.client_id,
+               'stripe_user_id': account.id,
+           }
+        )
 
 
 class AccountExternalAccountsTests(StripeMockTestCase):
