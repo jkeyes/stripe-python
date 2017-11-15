@@ -133,42 +133,4 @@ class SubscriptionTest(StripeMockTestCase):
     #    )
     #    self.assertIsInstance(resource, stripe.Subscription)
 
-    def test_serializes_when_items_is_a_list(self):
-        resource = stripe.Subscription.construct_from({
-            'object': 'subscription',
-            'items': {
-                'object': 'list',
-                'data': [],
-            }
-        }, stripe.api_key)
-        resource.items = [
-            {'id': 'si_foo', 'deleted': True},
-            {'plan': 'plan_bar'},
-        ]
-        expected = {
-            'items': {
-                '0': {'id': 'si_foo', 'deleted': True},
-                '1': {'plan': 'plan_bar'},
-            }
-        }
-        self.assertEquals(expected, resource.serialize(None))
-
-    def test_serializes_when_items_is_a_dict(self):
-        resource = stripe.Subscription.construct_from({
-            'object': 'subscription',
-            'items': {
-                'object': 'list',
-                'data': [],
-            }
-        }, stripe.api_key)
-        resource.items = {
-            '0': {'id': 'si_foo', 'deleted': True},
-            '1': {'plan': 'plan_bar'},
-        }
-        expected = {
-            'items': {
-                '0': {'id': 'si_foo', 'deleted': True},
-                '1': {'plan': 'plan_bar'},
-            }
-        }
-        self.assertEquals(expected, resource.serialize(None))
+    # TODO: Test serialize
